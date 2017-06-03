@@ -2,26 +2,27 @@ import ply.lex as lex
 
 reserved = {
    'op': 'OP',
-   'is' : 'IS',
 }
 
 precedence = {
-   'xfx': 'XFX',
-   'xfy': 'XFY',
-   'yfx': 'YFX',
-   'fx': 'FX',
-   'fy': 'FY',
-   'xf': 'XF',
-   'yf': 'YF',
+   'xfx',
+   'xfy',
+   'yfx',
+   'fx',
+   'fy',
+   'xf',
+   'yf',
 }
+
+operators = {'rdiv', '.', '@>=', '**', '>', '@>', ':<', '\\=@=', '|', '\\==', '^',
+             '+', '//', '?-', '*', 'mod', '-->', '=\\=', '=:=', '\\', '@<', '>>',
+             '<', 'xor', 'div', '==', ':', '>:<', '\\=', 'rem', '-', '\\/', 'as',
+             ':=', '\\+', '->', '$', '/', '>=', 'is', ':-', '?', '=@=', ';', '<<',
+             '*->', '=..', '/\\', '=<', '=', '@=<'}
 
 # List of token names.   This is always required
 tokens = tuple(list((
    'NUMBER',
-   'PLUS',
-   'MINUS',
-   'TIMES',
-   'DIVIDE',
    'LPAREN',
    'RPAREN',
    'COMMA',
@@ -35,15 +36,12 @@ tokens = tuple(list((
    'VAR',
    'ATOM',
    'PRECEDENCE',
+   'OPERATOR',
    'PRCUT'))
 + list(reserved.values())
 )
 
 # Regular expression rules for simple tokens
-t_PLUS = r'\+'
-t_MINUS = r'-'
-t_TIMES = r'\*'
-t_DIVIDE = r'/'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_COMMA = r','
@@ -64,15 +62,7 @@ def t_NUMBER(t):
 
 def t_STRING(t):
     r'\"(.|\\")*\"'
-    return t
-
-
-def t_ATOM(t):
-    r'[a-z0-9][a-zA-Z0-9_]*'
-    if t.value in reserved.keys():
-        t.type = reserved.get(t.value)
-    elif t.value in precedence.keys():
-        t.type = 'PRECEDENCE'
+    t.value = t.value[1:-1]
     return t
 
 
@@ -95,6 +85,18 @@ def t_COMMENT_SINGLE_LINE(t):
     r'(%%|%!)( )(.)*\n'
     pass
     # No return value. Token discarded
+
+
+def t_ATOM(t):
+    r'[a-z0-9@><=\*\\\|\^\+/\?\-/\\:\$\.\;](\S)*'
+    if t.value in reserved.keys():
+        t.type = reserved.get(t.value)
+    elif t.value in precedence:
+        t.type = 'PRECEDENCE'
+    elif t.value in operators:
+        t.type = 'OPERATOR'
+    return t
+
 
 # Build the lexer
 lexer = lex.lex()
@@ -127,8 +129,12 @@ merge([HR|T],[HL|L],[HR|R]) :- HL >= HR, merge(T,[HL|L],R).
   ABC , . ! * :
   
   xfx xfy fx fy
-'''
+< * --> + hello 1 2 3 3.5 0.99e12  
 
+rdiv  .  @>=  **  >  @>  :<  \\=@=  |  \\==  ^  +  //  ?-  *  mod  -->  
+=\\=  =:=  \\  @<  >>  <  xor  div  ==  :  >:<  \\=  rem  -  \\/  
+as  :=  \\+  ->  $  /  >=  is  :-  ?  =@=  ;  <<  *->  =..  /\\  =<  =  @=<
+'''
 # Give the lexer some input
 lexer.input(data)
 
