@@ -6,10 +6,10 @@ class OperatorInfo:
     precedence_type = {}
 
 
-
 def p_expression_precedence(p):
     'expression : OP LPAREN NUMBER COMMA PRECEDENCE COMMA ATOM RPAREN DOT'
     print('number = ' + p[2] + ', precedence = ' + p[4] + ', op = ' + p[6])
+
 
 standardOperators = '''
 op(700, xfx, <).
