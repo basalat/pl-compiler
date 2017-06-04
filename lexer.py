@@ -197,13 +197,12 @@ op(1, fx, $).
 # Give the lexer some input
 lexer.input(standardOperators)
 
-# Tokenize
-while True:
-    tok = lexer.token()
-    if not tok:
-        break      # No more input
-    print(tok)
-
-print(reserved)
-print(reserved.keys())
-print(reserved.values())
+if False:
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break      # No more input
+        print(tok)
+    print(reserved)
+    print(reserved.keys())
+    print(reserved.values())

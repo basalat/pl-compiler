@@ -6,9 +6,15 @@ class OperatorInfo:
     precedence_type = {}
 
 
+def p_expression_precedence_list(p):
+    '''precedence_list : precedence precedence_list
+                       | precedence'''
+    pass
+
 def p_expression_precedence(p):
-    'expression : OP LPAREN NUMBER COMMA PRECEDENCE COMMA ATOM RPAREN DOT'
-    print('number = ' + p[2] + ', precedence = ' + p[4] + ', op = ' + p[6])
+    'precedence : OP LPAREN NUMBER COMMA PRECEDENCE COMMA ATOM RPAREN DOT'
+    print('precedence = ' + p[5] + ', op = ' + p[7])
+    p[0] = p[7]
 
 
 standardOperators = '''
@@ -23,7 +29,7 @@ op(700, xfx, ==).
 op(700, xfx, =/=).
 op(700, xfx, >).
 op(700, xfx, >=).
-op(700, xfx, )@<.
+op(700, xfx, @<).
 op(700, xfx, @=<).
 op(700, xfx, @>).
 op(700, xfx, @>=).
@@ -66,3 +72,18 @@ op(200, fy, -).
 op(200, fy, \).
 op(1, fx, $).
 '''
+
+# Error rule for syntax errors
+def p_error(p):
+    print("Syntax error in input!")
+
+
+# Build the parser
+parser = yacc.yacc()
+
+while True:
+   s = standardOperators
+   result = parser.parse(s)
+   if result == None:
+       break
+   print(result)
