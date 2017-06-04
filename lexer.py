@@ -88,13 +88,15 @@ def t_COMMENT_SINGLE_LINE(t):
 
 
 def t_ATOM(t):
-    r'[a-z0-9@><=\*\\\|\^\+/\?\-/\\:\$\.\;](\S)*'
+    r'[a-z0-9@><=\*\\\|\^\+/\?\-/\\:\$\.\;][A-Za-z0-9@><=\*\\\|\^\+/\?\-/\\:\$\.\;]*'
     if t.value in reserved.keys():
         t.type = reserved.get(t.value)
     elif t.value in precedence:
         t.type = 'PRECEDENCE'
-    elif t.value in operators:
-        t.type = 'OPERATOR'
+    elif t.value == '.':
+        t.type = 'DOT'
+    elif t.value == ',':
+        t.type = 'COMMA'
     return t
 
 
@@ -110,6 +112,7 @@ op
   ABC
   _Acc
   abc132
+
 
 msort([],[]).
 msort([X],[X]).
@@ -135,8 +138,64 @@ rdiv  .  @>=  **  >  @>  :<  \\=@=  |  \\==  ^  +  //  ?-  *  mod  -->
 =\\=  =:=  \\  @<  >>  <  xor  div  ==  :  >:<  \\=  rem  -  \\/  
 as  :=  \\+  ->  $  /  >=  is  :-  ?  =@=  ;  <<  *->  =..  /\\  =<  =  @=<
 '''
+standardOperators = '''
+op(700, xfx, <).
+op(700, xfx, =).
+op(700, xfx, =..).
+op(700, xfx, =@=).
+op(700, xfx, \=@=).
+op(700, xfx, =:=).
+op(700, xfx, =<).
+op(700, xfx, ==).
+op(700, xfx, =/=).
+op(700, xfx, >).
+op(700, xfx, >=).
+op(700, xfx, )@<.
+op(700, xfx, @=<).
+op(700, xfx, @>).
+op(700, xfx, @>=).
+op(700, xfx, \=).
+op(700, xfx, \==).
+op(700, xfx, as).
+op(700, xfx, is).
+op(700, xfx, >:<).
+op(700, xfx, :<).
+op(1200, xfx, -->).
+op(1200, xfx, :-).
+op(1200, fx, :-).
+op(1200, fx, ?-).
+op(1100, xfy, ;).
+op(1100, xfy, |).
+op(1050, xfy, ->).
+op(1050, xfy, *->).
+op(990, xfx, :=).
+op(900, xfx, \+).
+op(600, yfx, :).
+op(500, yfx, +).
+op(500, yfx, -).
+op(500, yfx, /\).
+op(500, yfx, \/).
+op(500, yfx, xor).
+op(500, fx, ?).
+op(400, yfx, *).
+op(400, yfx, /).
+op(400, yfx, //).
+op(400, yfx, div).
+op(400, yfx, rdiv).
+op(400, yfx, <<).
+op(400, yfx, >>).
+op(400, yfx, mod).
+op(400, yfx, rem).
+op(200, xfx, **).
+op(200, xfy, ^).
+op(200, fy, +).
+op(200, fy, -).
+op(200, fy, \).
+op(1, fx, $).
+'''
+
 # Give the lexer some input
-lexer.input(data)
+lexer.input(standardOperators)
 
 # Tokenize
 while True:
