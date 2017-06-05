@@ -1,0 +1,33 @@
+Jun 4, 2017
+Parser:
+Prolog is difficult to parse with any CFL-type compiler because the precedence of operators
+can be changed at will. While this makes the language very powerful, it makes it difficult
+to write a parser. This can be overcome by accepting a few limitations. The first limitation
+being that the operator definitions must all be seperated and appear before any Prolog
+clauses. The second is that operator precendences, once defined, cannot be changed. A parser
+can then be written that reads the operator definitions and creates a parser based on the 
+definitions and precedences.
+
+It is not yet clear to me whether it is better to write the generated parser as a single 
+rule, or whether to break it down into several smaller rules. One of the things to think 
+about.
+
+It may also be that the restrictions are too onerous. Using operator re-definitions, it is 
+possible to write english-like sentences in Prolog. It is conceivable that it is possible
+to parse English by re-writing operator precedence rules on the fly. However, solving this
+problem or coming closer to a solution is not the motivation for this project.
+
+Compiler:
+The purpose of this project is to write a Prolog-to-SQL compiler. There is a natural 
+correspondence between Prolog and databases; Prolog facts are stored in a database, and
+a SQL-based database can be treated as a collection of Prolog facts. However, Prolog
+relies heavily on its theoroms being based on recursion and SQL leads its programmers to
+think in terms of set operations. Considerations for a compiler seem to be usually solved 
+by the compiled-to language accessing Prolog facts through a driver. The great limitation
+here is that this creates a bottle-neck in passing data in and out of the database. For a 
+wholly efficient system, it is necessary to execute the entire Prolog program inside the 
+database. Tail-recursion is easy to unwind but more sophisticated recursions might not be
+possible. One possibility is have partial compilation, where as much of the Prolog clauses
+as possible can be compiled, whereas the remaining are interpreted. Of course, all of this
+has to happen inside the database in order to avoid the possible driver bottlenecks.
+
